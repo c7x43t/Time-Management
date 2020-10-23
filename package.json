@@ -1,0 +1,8 @@
+{
+  "name": "time_management_app",
+  "version": "0.0.1",
+  "main": "index.js",
+  "repository": "https://github.com/c7x43t/Time-Management.git",
+  "author": "TIB4",
+  "license": "MIT"
+}
