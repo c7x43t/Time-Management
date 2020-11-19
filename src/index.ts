@@ -5,6 +5,8 @@ const server = require('server');
 const middleware = require('./server/middleware');
 const routes = require('./server/routes');
 const PORT = 8082;
+
+
 createConnection().then(async connection => {
 
     console.log("Inserting a new user into the database...");

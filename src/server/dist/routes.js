@@ -7,5 +7,11 @@ module.exports = [
     }),
     get('/api', function (ctx) {
         return 'api';
+    }),
+    get('/abc', function (ctx) {
+        console.log(ctx);
+    }),
+    post('/login', function (ctx) {
+        ctx.username;
     })
 ];
