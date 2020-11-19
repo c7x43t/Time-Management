@@ -68,4 +68,3 @@ typeorm_1.createConnection().then(function (connection) { return __awaiter(void 
         }
     });
 }); })["catch"](function (error) { return console.log(error); });
-console.log("");

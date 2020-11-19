@@ -23,4 +23,3 @@ createConnection().then(async connection => {
     server({ port: PORT },routes);
 }).catch(error => console.log(error));
 
-console.log("")
