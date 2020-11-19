@@ -22,3 +22,5 @@ createConnection().then(async connection => {
     console.log("Here you can setup and run express/koa/any other framework.");
     server({ port: PORT },routes);
 }).catch(error => console.log(error));
+
+console.log("")
