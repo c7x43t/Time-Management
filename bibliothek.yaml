@@ -1,0 +1,794 @@
+openapi: "3.0.0"
+info:
+  version: "0.1.0"
+  title: Bibliothek
+  description: |
+    Bibliothek API
+servers:
+  - url: http://localhost:3000/rest/v1
+paths:
+  /register-book/:
+    post:
+      #summary: Register a book.
+      description: Register a book.
+      #operationId: getSample
+      tags:
+        - Book
+      parameters:
+        - in: json
+          name: isbn  
+          schema:
+            type: string
+            default: ""
+          required: true
+        - in: json
+          name: number  
+          schema:
+            type: number
+            default: 0
+          required: true
+        - in: json
+          name: available  
+          schema:
+            type: boolean
+            default: false
+          required: false
+        - in: json
+          name: title  
+          schema:
+            type: string
+            default: ""
+          required: true
+        - in: json
+          name: author  
+          schema:
+            type: array
+            items:
+              type: string
+              default: ""
+          required: true
+        - in: json
+          name: year  
+          schema:
+            type: number
+          required: false
+        - in: json
+          name: edition  
+          schema:
+            type: string
+            default: ""
+          required: false
+        - in: json
+          name: publisher  
+          schema:
+            type: string
+            default: ""
+          required: true
+        - in: json
+          name: status
+          schema:
+            type: string
+            default: "registered"
+          required: false
+      responses:
+        '200':
+          description: Get the Book
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '204':
+          description: Book already exists, override not possible.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /edit-book/:
+    post:
+      description: Edit a book.
+      tags:
+        - Book
+      parameters:
+        - in: json
+          name: isbn  
+          schema:
+            type: string
+            default: ""
+          required: true
+        - in: json
+          name: number  
+          schema:
+            type: number
+          required: false
+        - in: json
+          name: available  
+          schema:
+            type: boolean
+          required: false
+        - in: json
+          name: title  
+          schema:
+            type: string
+          required: false
+        - in: json
+          name: author  
+          schema:
+            type: array
+            items:
+              type: string
+          required: false
+        - in: json
+          name: year  
+          schema:
+            type: number
+          required: false
+        - in: json
+          name: edition  
+          schema:
+            type: string
+          required: false
+        - in: json
+          name: publisher  
+          schema:
+            type: string
+          required: false
+        - in: json
+          name: status
+          schema:
+            type: string
+          required: false
+      responses:
+        '201':
+          description: Get the Book.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '204':
+          description: Book does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /add-book/:
+    post:
+      description: Add a book n times.
+      tags:
+          - Book
+      parameters:
+          - in: json
+            name: isbn  
+            schema:
+              type: string
+              default: ""
+            required: true
+          - in: json
+            name: number
+            schema:
+              type: number
+              default: 0
+            required: true
+      responses:
+        '200':
+          description: Success Message. Added book n times.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        '204':
+          description: Book not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /remove-book/:
+    post:
+      description: Remove a book n times.
+      tags:
+          - Book
+      parameters:
+        - in: json
+          name: isbn  
+          schema:
+            type: string
+            default: ""
+          required: true
+        - in: json
+          name: number
+          schema:
+            type: number
+            default: 0
+          required: true
+      responses:
+        '200':
+          description: Success Message. Removed book n times.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        '204':
+          description: Book not found, or not enough books available.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /request-book/:
+    post:
+      description: Request a book. A requested book needs to be approved to be registered.
+      tags:
+        - Book
+      parameters:
+        - in: json
+          name: isbn  
+          schema:
+            type: string
+            default: ""
+          required: true
+        - in: json
+          name: number  
+          schema:
+            type: number
+          required: false
+        - in: json
+          name: available  
+          schema:
+            type: boolean
+          required: false
+        - in: json
+          name: title  
+          schema:
+            type: string
+          required: false
+        - in: json
+          name: author  
+          schema:
+            type: array
+            items:
+              type: string
+          required: false
+        - in: json
+          name: year  
+          schema:
+            type: number
+          required: false
+        - in: json
+          name: edition  
+          schema:
+            type: string
+          required: false
+        - in: json
+          name: publisher  
+          schema:
+            type: string
+          required: false
+        - in: json
+          name: status
+          schema:
+            type: string
+          required: false
+      responses:
+        '201':
+          description: Get the Book
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '209':
+          description: Book already exist.
+          content:
+            application/json:
+              $ref: '#/components/schemas/Error'
+  /approve-request/:
+    post:
+      description: Approve a requested book. status = request
+      tags:
+        - Book
+      parameters:
+        - in: json
+          name: isbn  
+          schema:
+            type: string
+            default: ""
+          required: true
+      responses:
+        '200':
+          description: Success message. Book approved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        '204':
+          description: Book/Request not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /reject-request/:
+    post:
+      description: Reject a requested book. 
+      tags:
+        - Book
+      parameters:
+        - in: json
+          name: isbn  
+          schema:
+            type: string
+            default: ""
+          required: true
+        - in: json
+          name: reason
+          schema:
+            type: string
+            default: ""
+          required: false
+      responses:
+        '200':
+          description: Success message. Request rejected.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        '204':
+          description: Book/Request not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /get-book-info/:
+    post:
+      description: Reject a requested book. 
+      tags:
+        - Book
+      parameters:
+        - in: json
+          name: isbn  
+          schema:
+            type: string
+            default: ""
+          required: true
+      responses:
+        '200':
+          description: Get the book.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '204':
+          description: Book not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /reserve-book/:
+    post:
+      description: Reserve an unavailable book. 
+      tags:
+        - Book
+      parameters:
+        - in: json
+          name: isbn  
+          schema:
+            type: string
+            default: ""
+          required: true
+        - in: json
+          name: number
+          schema:
+            type: number
+            default: 1
+          required: true
+        - in: json
+          name: userId
+          schema:
+            type: string
+            default: ""
+          required: true
+      responses:
+        '200':
+          description: Success message. Book reserved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        '204':
+          description: Book not found, or book available.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /extend-book/:
+    post:
+      description: Extend a lend book. 
+      tags:
+        - Book
+      parameters:
+        - in: json
+          name: isbn  
+          schema:
+            type: string
+            default: ""
+          required: true
+        - in: json
+          name: number
+          schema:
+            type: number
+            default: 1
+          required: true
+        - in: json
+          name: userId
+          schema:
+            type: string
+            default: ""
+          required: true
+      responses:
+        '200':
+          description: Success message. Book extended my x months.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        '204':
+          description: Book not found, or book not borrowed by user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /submit-review/:
+    post:
+      description: Submit a review for a book. 
+      tags:
+        - Book
+      parameters:
+        - in: json
+          name: isbn  
+          schema:
+            type: string
+            default: ""
+          required: true
+        - in: json
+          name: rating
+          schema:
+            type: number
+            enum: [0,1,2,3,4,5,6,7,8,9,10]
+          required: true
+        - in: json
+          name: description
+          schema:
+            type: string
+            default: ""
+          required: false
+      responses:
+        '200':
+          description: Success message. Book review accepted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        '204':
+          description: Book not found, or user not eligible for reviewing that book.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /list-reviews/:
+    post:
+      description: List all reviews for a book.
+      tags:
+        - Book
+      parameters:
+        - in: json
+          name: isbn  
+          schema:
+            type: string
+            default: ""
+          required: true
+      responses:
+        '200':
+          description: List of book reviews.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  schema:
+                  $ref: '#/components/schemas/Review'
+                
+        '204':
+          description: Book not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /list-unavailable-books/:
+    post:
+      description: List all books with status available = false.
+      tags:
+        - Book
+      parameters:
+      responses:
+        '200':
+          description: List of unavailable books.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  schema:
+                  $ref: '#/components/schemas/Book'
+  /list-requested-books/:
+    post:
+      description: List all requested books, with status = requested.
+      tags:
+        - Book
+      parameters:
+        - in: json
+          name: userId  
+          schema:
+            type: string
+            default: ""
+          required: false
+      responses:
+        '200':
+          description: List of requested books.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  schema:
+                  $ref: '#/components/schemas/Book'
+  /list-borrowed-books/:
+    post:
+      description: List borrowed books of user.
+      tags:
+        - Book
+      parameters:
+        - in: json
+          name: userId  
+          schema:
+            type: string
+            default: ""
+          required: true
+      responses:
+        '200':
+          description: List of requested books.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  schema:
+                  $ref: '#/components/schemas/Book'
+  /list-reserved-books/:
+    post:
+      description: List reserved books of user.
+      tags:
+        - Book
+      parameters:
+        - in: json
+          name: userId  
+          schema:
+            type: string
+            default: ""
+          required: true
+      responses:
+        '200':
+          description: List of requested books.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  schema:
+                  $ref: '#/components/schemas/Book'
+  /list-returned-books/:
+    post:
+      description: List books returned by user.
+      tags:
+        - Book
+      parameters:
+        - in: json
+          name: userId  
+          schema:
+            type: string
+            default: ""
+          required: true
+      responses:
+        '200':
+          description: List of returned books.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  schema:
+                  $ref: '#/components/schemas/Book'
+  /remove-reservation/:
+    post:
+      description: Remove reservation. 
+      tags:
+        - Book
+      parameters:
+        - in: json
+          name: reservationId  
+          schema:
+            type: string
+            default: ""
+          required: true
+      responses:
+        '200':
+          description: Success message. Book reservation removed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        '204':
+          description: Reservation does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /borrow-book/:
+    post:
+      description: Borrow a book/s. 
+      tags:
+        - Book
+      parameters:
+        - in: json
+          name: isbn  
+          schema:
+            type: string
+            default: ""
+          required: true
+        - in: json
+          name: number
+          schema:
+            type: number
+            default: 1
+          required: true
+        - in: json
+          name: userId
+          schema:
+            type: string
+            default: ""
+          required: true
+      responses:
+        '200':
+          description: Success message. N book/s borrowed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        '204':
+          description: Book not found, or book unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /return-book/:
+    post:
+      description: Return a book/s. 
+      tags:
+        - Book
+      parameters:
+        - in: json
+          name: isbn  
+          schema:
+            type: string
+            default: ""
+          required: true
+        - in: json
+          name: number
+          schema:
+            type: number
+            default: 1
+          required: true
+        - in: json
+          name: userId
+          schema:
+            type: string
+            default: ""
+          required: true
+      responses:
+        '200':
+          description: Success message. N book/s returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        '204':
+          description: Book not found, or book not borrowed by user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /search-books/:
+    post:
+      description: List reserved books of user.
+      tags:
+        - Book
+      parameters:
+        - in: json
+          name: query  
+          schema:
+            type: string
+            default: ""
+          required: true
+      responses:
+        '200':
+          description: Search results - list of matching books.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  schema:
+                  $ref: '#/components/schemas/Book'
+components:
+  schemas:
+    Error:
+      properties:
+        result:
+          enum: ["Error"]
+          type: string
+        message:
+          type: string
+    Success:
+      properties:
+        result:
+          enum: ["Success"]
+          type: string
+        message:
+          type: string
+    Book:
+      properties:
+        isbn:
+          type: string
+        number:
+          type: number
+        available:
+          type: boolean
+        title:
+          type: string
+        author:
+          type: array
+          items:
+            type: string
+        year:
+          type: number
+        edition:
+          type: string
+        publisher:
+          type: string
+        rating-avg:
+          type: number
+        rating-count:
+          type: number
+        status:
+          type: string
+    Review:
+      properties:
+        isbn:
+          type: string
+        rating:
+          type: number
+        description:
+          type: string
+    Reservation:
+      properties:
+        isbn:
+          type: string
+        number:
+          type: number
+        reservationId:
+          type: string
+        userId:
+          type: string
+    Borrow:
+      properties:
+        isbn:
+          type: string
+        userId:
+          type: string
+        number:
+          type: number
